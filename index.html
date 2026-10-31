@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="te"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TVS PDF Free App</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0f7b6c"><link rel="apple-touch-icon" href="icon-v2-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<style>
+:root{--bg:#e9eff1;--sf:#fff;--ink:#12222b;--mu:#5d7079;--ac:#0f7b6c;--ac2:#e8a33d;--ln:#cfdadf;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-t=l]){--bg:#0d1418;--sf:#17222a;--ink:#e6eef1;--mu:#8fa4ad;--ac:#35b8a5;--ln:#2a3a44;color-scheme:dark}}
+:root[data-t=d]{--bg:#0d1418;--sf:#17222a;--ink:#e6eef1;--mu:#8fa4ad;--ac:#35b8a5;--ln:#2a3a44;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font:15px/1.5 "Noto Sans Telugu","Nirmala UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0)}
+header{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--sf);border-bottom:1px solid var(--ln)}
+header b{font-size:18px;letter-spacing:.3px}header b i{font-style:normal;color:var(--ac)}
+header span{flex:1;color:var(--mu);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button,.b{font:inherit;border:1px solid var(--ln);background:var(--sf);color:var(--ink);border-radius:10px;padding:8px 12px;min-height:40px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+button:focus-visible,.b:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+#bar{display:flex;gap:6px;padding:6px 10px;background:var(--sf);border-bottom:1px solid var(--ln);align-items:center;overflow-x:auto}
+#bar button{padding:4px 10px;min-height:34px}
+#pn{white-space:nowrap;color:var(--mu);font-size:13px}
+#main{flex:1;overflow:auto;position:relative}
+#v{padding:10px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.pg{position:relative;background:#fff;box-shadow:0 1px 6px #0004;max-width:none}
+.pg canvas{position:absolute;left:0;top:0;width:100%;height:100%}
+body.inv .pg>canvas.m{filter:invert(1) hue-rotate(180deg)}
+body.dr .pg>canvas.o{touch-action:none;cursor:crosshair}
+#empty{margin:auto;text-align:center;padding:30px;max-width:340px}
+#empty h2{margin:0 0 6px;font-size:22px}#empty p{color:var(--mu);margin:0 0 16px}
+nav{display:flex;background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0)}
+nav button{flex:1;border:0;border-radius:0;flex-direction:column;font-size:12px;gap:0;padding:6px 2px;min-height:52px;background:none}
+nav button.on{color:var(--ac);box-shadow:inset 0 3px 0 var(--ac)}
+nav button u{text-decoration:none;font-size:19px;line-height:1.1}
+#sheet{position:fixed;left:0;right:0;bottom:0;max-height:70%;overflow:auto;background:var(--sf);border-top:2px solid var(--ac);border-radius:16px 16px 0 0;padding:14px 14px calc(70px + env(safe-area-inset-bottom,0));z-index:5;display:none;box-shadow:0 -4px 20px #0005}
+#sheet.on{display:block}
+#sheet h3{margin:0 0 10px;font-size:16px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g button{flex-direction:column;padding:12px 6px;text-align:center;font-size:13px}
+.g button u{text-decoration:none;font-size:22px}
+.th{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.th div{border:1px solid var(--ln);border-radius:10px;padding:6px;text-align:center;font-size:12px}
+.th canvas{width:100%;display:block;background:#fff;border-radius:4px;margin-bottom:4px;cursor:pointer}
+.th button{padding:2px 6px;min-height:30px;font-size:13px}
+input[type=text],input[type=search],textarea{font:inherit;width:100%;padding:9px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--ink)}
+textarea{height:200px}
+.r{padding:8px;border-bottom:1px solid var(--ln);cursor:pointer;font-size:13px}.r b{color:var(--ac)}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;align-items:center}
+.sw{width:30px;height:30px;border-radius:50%;padding:0;min-height:0}
+.sw.on{outline:3px solid var(--ac);outline-offset:2px}
+#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:20px;z-index:9;display:none;font-size:13px}
+#sg{width:100%;height:150px;border:1px dashed var(--mu);border-radius:10px;touch-action:none;background:#fff}
+#ul{font:inherit;border:1px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--ink);padding:6px;max-width:92px;min-height:36px}
+#sp{position:fixed;inset:0;background:#0f7b6c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;z-index:99;font-size:24px;font-weight:700;transition:opacity .5s}
+#sp img{width:96px;border-radius:22px}.g.x{margin-top:8px}
+select.f{width:100%;padding:9px;font:inherit;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--ink)}
+</style></head><body>
+<header><img src="icon-v2-192.png" width="28" height="28" style="border-radius:7px" alt=""><b>TVS <i>PDF</i></b><span id="fn">ఉచిత PDF యాప్</span><select id="ul" aria-label="Language"></select><button id="dk" title="చీకటి మోడ్">🌓</button></header>
+<div id="bar" hidden>
+<button id="zo">−</button><button id="zi">+</button>
+<button id="pv">‹</button><span id="pn">0/0</span><button id="nx">›</button>
+<button id="inv">చీకటి పేజీ</button>
+<span id="drt" hidden style="display:none"></span>
+</div>
+<div id="main"><div id="v"></div>
+<div id="empty"><h2>PDF తెరవండి</h2><p>మీ ఫోన్‌లోని PDF ని ఎంచుకోండి. అన్నీ మీ ఫోన్‌లోనే జరుగుతాయి, ఏదీ ఇంటర్నెట్‌కు వెళ్లదు.</p>
+<label class="b p">📂 PDF ఎంచుకోండి<input id="fo" type="file" accept="application/pdf" hidden></label></div></div>
+<div id="sheet"></div><div id="toast"></div>
+<nav>
+<button data-s="s"><u>🔍</u>వెతుకు</button>
+<button data-s="p"><u>▦</u>పేజీలు</button>
+<button data-s="t"><u>🧰</u>పరికరాలు</button>
+<button data-s="d"><u>✏️</u>రాయి</button>
+<button data-s="v"><u>💾</u>సేవ్</button>
+</nav>
+<script>
+const $=s=>document.querySelector(s),PL=PDFLib,dpr=Math.min(devicePixelRatio||1,2);
+let bytes,pdf,pw,name='document.pdf',sc=1,cur=1,ann={},tool='pen',col='#d32f2f',sigImg=null;
+const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._);t._=setTimeout(()=>t.style.display='none',2600)};
+const U8=b=>new Uint8Array(b);
+const rd=f=>new Promise(r=>{const x=new FileReader();x.onload=()=>r(U8(x.result));x.readAsArrayBuffer(f)});
+let wk;
+(async()=>{try{const t=await (await fetch('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js')).text();wk=URL.createObjectURL(new Blob([t],{type:'text/javascript'}))}catch(e){}
+pdfjsLib.GlobalWorkerOptions.workerSrc=wk||'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'})();
+
+async function load(b,keepPos){
+ bytes=b;ann={};
+ try{pdf=await pdfjsLib.getDocument({data:b.slice(),password:pw}).promise}
+ catch(e){if(e.name==='PasswordException'){pw=prompt('ఈ PDF కి పాస్‌వర్డ్ ఉంది. పాస్‌వర్డ్ టైప్ చేయండి:');if(pw)return load(b,keepPos);return}
+  toast('ఈ ఫైల్ తెరవలేకపోయాం');return}
+ $('#empty').style.display='none';$('#bar').hidden=false;$('#fn').textContent=name;
+ await draw(keepPos);
+}
+async function draw(keep){
+ const v=$('#v'),top=$('#main').scrollTop;v.innerHTML='';
+ const W=Math.min(innerWidth-20,900)*sc,io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);paint(e.target)}}),{root:$('#main'),rootMargin:'600px'});
+ for(let i=1;i<=pdf.numPages;i++){
+  const p=await pdf.getPage(i),vp=p.getViewport({scale:1}),k=W/vp.width,d=document.createElement('div');
+  d.className='pg';d.dataset.i=i;d.style.width=W+'px';d.style.height=vp.height*k+'px';d._p=p;d._k=k;v.appendChild(d);io.observe(d)}
+ if(keep)$('#main').scrollTop=top;upd();
+}
+async function paint(d){
+ const vp=d._p.getViewport({scale:d._k*dpr}),c=document.createElement('canvas');c.className='m';c.width=vp.width;c.height=vp.height;
+ d.appendChild(c);await d._p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+ const o=document.createElement('canvas');o.className='o';o.width=vp.width;o.height=vp.height;d.appendChild(o);d._o=o;
+ let cu=null;const pt=e=>{const r=o.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
+ o.onpointerdown=e=>{if(!document.body.classList.contains('dr'))return;const i=+d.dataset.i,a=ann[i]=ann[i]||[],[x,y]=pt(e);
+  if(tool==='tx'){const t=prompt('రాయాల్సిన టెక్స్ట్:');if(t)a.push({t:'tx',c:col,x,y,s:t});show(i);return}
+  if(tool==='sg'){if(!sigImg)return toast('ముందు సంతకం గీయండి');a.push({t:'im',x:x-.12,y,w:.24,src:sigImg});show(i);return}
+  cu={t:tool,c:col,p:[[x,y]]};a.push(cu);o.setPointerCapture(e.pointerId)};
+ o.onpointermove=e=>{if(cu){cu.p.push(pt(e));show(+d.dataset.i)}};
+ o.onpointerup=()=>cu=null;
+ show(+d.dataset.i);
+}
+function show(i){const d=$('.pg[data-i="'+i+'"]');if(d&&d._o)paintAnn(d._o.getContext('2d'),ann[i]||[],d._o.width,d._o.height)}
+function paintAnn(x,a,w,h){x.clearRect(0,0,w,h);x.lineCap=x.lineJoin='round';
+ for(const s of a){if(s.t==='tx'){x.fillStyle=s.c;x.font='bold '+w*.032+'px sans-serif';x.textBaseline='top';x.fillText(s.s,s.x*w,s.y*h)}
+ else if(s.t==='im'){if(!s.m){s.m=new Image();s.m.onload=()=>show(cur);s.m.src=s.src}if(s.m.complete)x.drawImage(s.m,s.x*w,s.y*h,s.w*w,s.w*w*s.m.height/s.m.width)}
+ else{x.strokeStyle=s.c;x.globalAlpha=s.t==='hl'?.35:1;x.lineWidth=s.t==='hl'?w*.03:w*.004;x.beginPath();s.p.forEach((q,j)=>j?x.lineTo(q[0]*w,q[1]*h):x.moveTo(q[0]*w,q[1]*h));if(s.p.length==1)x.lineTo(s.p[0][0]*w+.1,s.p[0][1]*h);x.stroke();x.globalAlpha=1}}}
+function upd(){const n=pdf?pdf.numPages:0;$('#pn').textContent=cur+'/'+n}
+$('#main').addEventListener('scroll',()=>{const m=$('#main'),mid=m.getBoundingClientRect().top+m.clientHeight/2;
+ for(const d of document.querySelectorAll('.pg')){const r=d.getBoundingClientRect();if(r.top<=mid&&r.bottom>=mid){cur=+d.dataset.i;break}}upd()});
+const go=i=>{const d=$('.pg[data-i="'+i+'"]');if(d){d.scrollIntoView();cur=i;upd()}};
+$('#pv').onclick=()=>go(Math.max(1,cur-1));$('#nx').onclick=()=>go(Math.min(pdf.numPages,cur+1));
+$('#zi').onclick=()=>{sc=Math.min(3,sc+.25);draw(1)};$('#zo').onclick=()=>{sc=Math.max(.5,sc-.25);draw(1)};
+$('#inv').onclick=()=>document.body.classList.toggle('inv');
+$('#dk').onclick=()=>{const r=document.documentElement,dark=r.dataset.t==='d'||(!r.dataset.t&&matchMedia('(prefers-color-scheme:dark)').matches);r.dataset.t=dark?'l':'d'};
+$('#fo').onchange=async e=>{const f=e.target.files[0];if(!f)return;name=f.name;pw=undefined;load(await rd(f))};
+
+// flatten drawings into the PDF
+async function flat(){
+ if(!Object.values(ann).some(a=>a.length))return;
+ const doc=await PL.PDFDocument.load(bytes,{ignoreEncryption:true});
+ for(const i in ann){if(!ann[i].length)continue;const pg=doc.getPage(i-1),{width:w,height:h}=pg.getSize(),c=document.createElement('canvas');
+  c.width=w*2;c.height=h*2;const imgs=ann[i].filter(s=>s.t==='im');
+  await Promise.all(imgs.map(s=>new Promise(r=>{if(s.m&&s.m.complete)return r();s.m=new Image();s.m.onload=r;s.m.src=s.src})));
+  paintAnn(c.getContext('2d'),ann[i],c.width,c.height);
+  const im=await doc.embedPng(c.toDataURL('image/png'));pg.drawImage(im,{x:0,y:0,width:w,height:h})}
+ bytes=await doc.save();ann={};
+}
+async function edit(fn,msg){if(!bytes)return toast('ముందు PDF తెరవండి');
+ try{await flat();const doc=await PL.PDFDocument.load(bytes,{ignoreEncryption:true});const r=await fn(doc);const out=r instanceof Uint8Array?r:await doc.save();await load(out,1);if(msg)toast(msg);if(sh==='p')sheet('p')}catch(e){toast('పని కాలేదు: '+(e.message||e))}}
+async function reorder(doc,order){const nd=await PL.PDFDocument.create();(await nd.copyPages(doc,order)).forEach(p=>nd.addPage(p));return nd.save()}
+const pick=(acc,multi)=>new Promise(r=>{const i=document.createElement('input');i.type='file';i.accept=acc;i.multiple=!!multi;if(window.CAP)i.capture="environment";i.onchange=()=>r([...i.files]);i.click()});
+
+async function merge(){const fs=await pick('application/pdf',1);if(!fs.length)return;
+ let base=bytes;const first=!bytes;
+ await edit(async doc=>{const nd=first?await PL.PDFDocument.create():doc;
+  for(const f of fs){const s=await PL.PDFDocument.load(await rd(f),{ignoreEncryption:true});(await nd.copyPages(s,s.getPageIndices())).forEach(p=>nd.addPage(p))}
+  return nd.save()},'PDF లు కలిశాయి');if(first)name='merged.pdf'}
+async function imgs(){const fs=await pick('image/*',1);if(!fs.length)return;const first=!bytes;
+ const run=async doc=>{const nd=first?await PL.PDFDocument.create():doc;
+  for(const f of fs){const u=await rd(f);let im;
+   if(f.type==='image/jpeg')im=await nd.embedJpg(u);else if(f.type==='image/png')im=await nd.embedPng(u);
+   else{const b=await createImageBitmap(f),c=document.createElement('canvas');c.width=b.width;c.height=b.height;c.getContext('2d').drawImage(b,0,0);im=await nd.embedPng(c.toDataURL('image/png'))}
+   const k=Math.min(1,595/im.width,842/im.height*1),w=im.width*k,h=im.height*k,p=nd.addPage([w,h]);p.drawImage(im,{x:0,y:0,width:w,height:h})}
+  return nd.save()};
+ if(first){try{await load(await run(),0);name='photos.pdf'}catch(e){toast('ఫోటో మార్చలేకపోయాం')}}else await edit(run,'ఫోటోలు PDF లో చేరాయి')}
+function ranges(t,n){const o=[];for(const s of t.split(',')){const m=s.trim().match(/^(\d+)(?:\s*-\s*(\d+))?$/);if(!m)continue;let a=+m[1],b=+(m[2]||m[1]);if(a>b)[a,b]=[b,a];for(let i=Math.max(1,a);i<=Math.min(n,b);i++)o.push(i-1)}return o}
+async function extract(){const t=prompt('ఏ పేజీలు కావాలి? ఉదా: 1-3,5 (మొత్తం '+pdf.numPages+' పేజీలు)');if(!t)return;
+ const o=ranges(t,pdf.numPages);if(!o.length)return toast('పేజీ సంఖ్యలు సరిగా లేవు');
+ await edit(async d=>reorder(d,o),o.length+' పేజీలు మాత్రమే మిగిలాయి. సేవ్ చేయండి');name='extract_'+name}
+
+// sheets
+let sh='';
+function sheet(k){const s=$('#sheet');sh=sh===k&&!arguments[1]?'':k;if(k==='p')sh='p';
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.s===sh));
+ document.body.classList.toggle('dr',sh==='d');
+ if(!sh){s.className='';return}
+ s.className='on';
+ if(!pdf&&sh!=='t'){s.innerHTML='<h3>ముందు PDF తెరవండి</h3>';return}
+ ({s:fS,p:fP,t:fT,d:fD,v:fV})[sh]()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>sheet(b.dataset.s));
+function fT(){$('#sheet').innerHTML='<h3>పరికరాలు</h3><div class="g"><button id="a1"><u>📂</u>PDF తెరువు</button><button id="a2"><u>➕</u>PDF లు కలుపు</button><button id="a3"><u>✂️</u>కొన్ని పేజీలు తీయి</button><button id="a4"><u>🖼️</u>ఫోటోలు → PDF</button><button id="a5"><u>📷</u>పేజీ → ఫోటో</button><button id="a6"><u>📝</u>టెక్స్ట్ కాపీ</button></div>';
+ $('#a1').onclick=()=>$('#fo').click();$('#a2').onclick=merge;$('#a4').onclick=imgs;
+ $('#a3').onclick=()=>pdf?extract():toast('ముందు PDF తెరవండి');
+ $('#a5').onclick=()=>pdf?toImg():toast('ముందు PDF తెరవండి');$('#a6').onclick=()=>pdf?txt():toast('ముందు PDF తెరవండి')}
+async function getText(i){const c=await (await pdf.getPage(i)).getTextContent();return c.items.map(x=>x.str).join(' ')}
+async function fS(){$('#sheet').innerHTML='<h3>టెక్స్ట్ వెతుకు</h3><input type="search" id="q" placeholder="పదం టైప్ చేయండి"><div id="rs"></div>';
+ $('#q').onchange=async()=>{const q=$('#q').value.toLowerCase().trim();if(!q)return;const r=$('#rs');r.innerHTML='<div class="r">వెతుకుతున్నాం…</div>';let h='',n=0;
+  for(let i=1;i<=pdf.numPages;i++){const t=await getText(i),l=t.toLowerCase();let j=l.indexOf(q);if(j<0)continue;n++;
+   h+='<div class="r" data-i="'+i+'"><b>పేజీ '+i+'</b> … '+t.slice(Math.max(0,j-30),j+60).replace(/</g,'&lt;')+' …</div>'}
+  r.innerHTML=h||'<div class="r">ఏమీ దొరకలేదు. స్కాన్ చేసిన PDF లో టెక్స్ట్ ఉండదు.</div>';
+  r.querySelectorAll('.r[data-i]').forEach(e=>e.onclick=()=>{sheet('s');go(+e.dataset.i)})}}
+async function fP(){const s=$('#sheet');s.innerHTML='<h3>పేజీలు ('+pdf.numPages+')</h3><div class="th" id="th"></div>';
+ for(let i=1;i<=pdf.numPages;i++){const p=await pdf.getPage(i),vp=p.getViewport({scale:.35}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+  const d=document.createElement('div');d.append(c);d.insertAdjacentHTML('beforeend','<div>'+i+'</div><button data-a="r">↻</button> <button data-a="x">🗑</button> <button data-a="l">◀</button> <button data-a="g">▶</button>');
+  $('#th').append(d);p.render({canvasContext:c.getContext('2d'),viewport:vp});
+  c.onclick=()=>{sheet('p');sh='';s.className='';document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));go(i)};
+  d.querySelectorAll('button').forEach(b=>b.onclick=()=>pageOp(b.dataset.a,i-1))}}
+async function pageOp(a,i){const n=pdf.numPages;
+ if(a==='r')return edit(async d=>{const p=d.getPage(i);p.setRotation(PL.degrees((p.getRotation().angle+90)%360))});
+ if(a==='x'){if(n<2)return toast('చివరి పేజీ తొలగించలేరు');if(!confirm('పేజీ '+(i+1)+' తొలగించాలా?'))return;return edit(async d=>{d.removePage(i)})}
+ const j=a==='l'?i-1:i+1;if(j<0||j>=n)return;
+ edit(async d=>{const o=[...Array(n).keys()];[o[i],o[j]]=[o[j],o[i]];return reorder(d,o)})}
+function fD(){const cs=['#d32f2f','#1565c0','#2e7d32','#111111','#f9a825'];
+ $('#sheet').innerHTML='<h3>PDF పై రాయి (స్క్రోల్ కోసం ‹ › వాడండి)</h3><div class="row"><button data-k="pen">✏️ గీత</button><button data-k="hl">🖍 హైలైట్</button><button data-k="tx">🔤 టెక్స్ట్</button><button data-k="sg">✍️ సంతకం</button></div><div class="row">'+cs.map(c=>'<button class="sw'+(c===col?' on':'')+'" data-c="'+c+'" style="background:'+c+'"></button>').join('')+'<button id="un">↩ వెనక్కి</button><button id="mk">సంతకం గీయి</button></div><p style="color:var(--mu);font-size:13px;margin:4px 0">'+({pen:'పేజీపై వేలితో గీయండి',hl:'హైలైట్ చేయాల్సిన చోట గీయండి',tx:'పేజీపై నొక్కితే టెక్స్ట్ పెడతాం',sg:'పేజీపై నొక్కితే సంతకం పెడతాం'})[tool]+'</p>';
+ document.querySelectorAll('#sheet [data-k]').forEach(b=>{b.className=b.dataset.k===tool?'p':'';b.onclick=()=>{tool=b.dataset.k;fD()}});
+ document.querySelectorAll('#sheet [data-c]').forEach(b=>b.onclick=()=>{col=b.dataset.c;fD()});
+ $('#un').onclick=()=>{const a=ann[cur];if(a&&a.length){a.pop();show(cur)}};
+ $('#mk').onclick=sign}
+function sign(){const s=$('#sheet');s.innerHTML='<h3>సంతకం గీయండి</h3><canvas id="sg" width="600" height="300"></canvas><div class="row"><button id="c1">తుడుపు</button><button class="p" id="c2">సరే</button></div>';
+ const c=$('#sg'),x=c.getContext('2d');x.lineWidth=5;x.lineCap='round';x.strokeStyle='#111';let on=0;
+ const p=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*600/r.width,(e.clientY-r.top)*300/r.height]};
+ c.onpointerdown=e=>{on=1;const[a,b]=p(e);x.beginPath();x.moveTo(a,b);c.setPointerCapture(e.pointerId)};
+ c.onpointermove=e=>{if(on){const[a,b]=p(e);x.lineTo(a,b);x.stroke()}};c.onpointerup=()=>on=0;
+ $('#c1').onclick=()=>x.clearRect(0,0,600,300);$('#c2').onclick=()=>{sigImg=c.toDataURL('image/png');tool='sg';fD()}}
+async function toImg(){const all=confirm('అన్ని పేజీలు ఫోటోలుగా సేవ్ చేయాలా? (Cancel నొక్కితే ఈ పేజీ మాత్రమే)');
+ for(const i of all?[...Array(pdf.numPages).keys()].map(x=>x+1):[cur]){await flat();const p=await pdf.getPage(i),vp=p.getViewport({scale:2}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+  await p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;const b=await new Promise(r=>c.toBlob(r,'image/png'));dl(b,name.replace(/\.pdf$/i,'')+'_p'+i+'.png');await new Promise(r=>setTimeout(r,500))}}
+async function txt(){const all=confirm('అన్ని పేజీల టెక్స్ట్ కావాలా? (Cancel నొక్కితే ఈ పేజీ మాత్రమే)');let t='';
+ for(const i of all?[...Array(pdf.numPages).keys()].map(x=>x+1):[cur])t+=await getText(i)+'\n\n';
+ sh='x';const s=$('#sheet');s.className='on';s.innerHTML='<h3>టెక్స్ట్</h3><textarea id="ta"></textarea><div class="row"><button class="p" id="cp">కాపీ చేయి</button><button id="cl">మూసివేయి</button></div>';
+ $('#ta').value=t.trim()||'ఈ పేజీలో టెక్స్ట్ లేదు (స్కాన్ చేసిన పేజీ కావచ్చు).';
+ $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#ta').value)}catch(e){$('#ta').select();document.execCommand('copy')}toast('కాపీ అయింది')};$('#cl').onclick=()=>{sh='';s.className=''}}
+function dl(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.append(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href)},4000)}
+function fV(){$('#sheet').innerHTML='<h3>సేవ్ / షేర్</h3><div class="g"><button id="v1"><u>💾</u>సేవ్ (డౌన్‌లోడ్)</button><button id="v2"><u>📤</u>షేర్</button><button id="v3"><u>🖨️</u>ప్రింట్</button></div>';
+ const blob=async()=>{await flat();await load(bytes,1);return new Blob([bytes],{type:'application/pdf'})};
+ $('#v1').onclick=async()=>{dl(await blob(),name);toast('సేవ్ అయింది')};
+ $('#v2').onclick=async()=>{const b=await blob(),f=new File([b],name,{type:'application/pdf'});
+  if(navigator.canShare&&navigator.canShare({files:[f]}))try{await navigator.share({files:[f]})}catch(e){}else toast('ఈ బ్రౌజర్‌లో షేర్ లేదు, సేవ్ వాడండి')};
+ $('#v3').onclick=async()=>{const u=URL.createObjectURL(await blob()),w=open(u);if(!w)toast('ప్రింట్ కోసం సేవ్ చేసి PDF నుంచి ప్రింట్ చేయండి');else w.onload=()=>w.print()}}
+</script>
+<script>
+const L=[['te','తెలుగు','te-IN','tel'],['en','English','en-IN','eng'],['hi','हिन्दी','hi-IN','hin'],['ta','தமிழ்','ta-IN','tam'],['kn','ಕನ್ನಡ','kn-IN','kan'],['ml','മലയാളം','ml-IN','mal'],['ur','اردو','ur-PK','urd'],['mr','मराठी','mr-IN','mar'],['bn','বাংলা','bn-IN','ben'],['gu','ગુજરાતી','gu-IN','guj']];
+const UI={te:['వెతుకు','పేజీలు','పరికరాలు','రాయి','సేవ్','PDF తెరవండి'],en:['Search','Pages','Tools','Draw','Save','Open a PDF'],hi:['खोजें','पेज','टूल्स','लिखें','सेव','PDF खोलें'],ta:['தேடு','பக்கங்கள்','கருவிகள்','எழுது','சேமி','PDF திறக்கவும்'],kn:['ಹುಡುಕು','ಪುಟಗಳು','ಉಪಕರಣ','ಬರೆ','ಉಳಿಸು','PDF ತೆರೆಯಿರಿ'],ml:['തിരയുക','പേജുകൾ','ടൂളുകൾ','എഴുതുക','സേവ്','PDF തുറക്കുക']};
+let ul='te';try{ul=localStorage.getItem('ul')||'te'}catch(e){}
+const LI=()=>L.find(x=>x[0]===ul)||L[0],LO=s=>L.map(x=>'<option value="'+x[0]+'"'+(x[0]===s?' selected':'')+'>'+x[1]+'</option>').join('');
+function applyUI(){const u=UI[ul]||UI.en;document.querySelectorAll('nav button').forEach((b,i)=>b.lastChild.textContent=u[i]);$('#empty h2').textContent=u[5];document.documentElement.lang=ul;$('#ul').value=ul}
+$('#ul').innerHTML=LO(ul);$('#ul').onchange=e=>{ul=e.target.value;try{localStorage.setItem('ul',ul)}catch(x){}applyUI()};applyUI();
+function mic(inp){const R=window.SpeechRecognition||window.webkitSpeechRecognition,b=document.createElement('button');b.textContent='🎤';b.style.marginTop='6px';
+ b.onclick=()=>{if(!R)return toast('ఈ బ్రౌజర్‌లో మైక్ లేదు, Chrome వాడండి');const r=new R();r.lang=LI()[2];r.onresult=e=>{inp.value+=(inp.value?' ':'')+e.results[0][0].transcript;inp.dispatchEvent(new Event('change'))};r.onerror=()=>toast('మైక్ పనిచేయలేదు');r.start();toast('మాట్లాడండి…')};inp.after(b)}
+function box(t,v){sh='x';const s=$('#sheet');s.className='on';s.innerHTML='<h3>'+t+'</h3><textarea id="ta"></textarea><div class="row"><button class="p" id="cp">కాపీ చేయి</button><button id="cl">మూసివేయి</button></div>';$('#ta').value=v;mic($('#ta'));
+ $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#ta').value)}catch(e){$('#ta').select();document.execCommand('copy')}toast('కాపీ అయింది')};$('#cl').onclick=()=>{sh='';s.className=''}}
+const _fS=fS;fS=async function(){await _fS();mic($('#q'))};
+const _fV=fV;fV=function(){_fV();$('#sheet .g').insertAdjacentHTML('beforeend','<button id="v4"><u>💬</u>WhatsApp కి పంపు</button>');$('#v4').onclick=()=>{toast('షేర్ లిస్ట్‌లో WhatsApp ఎంచుకోండి');$('#v2').click()}};
+const X=[['tr','🌐','అనువాదం'],['rd','🔊','చదివి వినిపించు'],['pn','🔢','పేజీ నంబర్లు'],['wm','💧','వాటర్‌మార్క్'],['cp','🗜️','సైజు తగ్గించు'],['sc','📸','కెమెరా స్కాన్'],['oc','🔎','OCR అక్షరాలు'],['bl','🧾','బిల్లు మొత్తం']];
+const N=f=>()=>pdf?f():toast('ముందు PDF తెరవండి');
+const _fT=fT;fT=function(){_fT();$('#sheet').insertAdjacentHTML('beforeend','<div class="g x">'+X.map(x=>'<button data-x="'+x[0]+'"><u>'+x[1]+'</u>'+x[2]+'</button>').join('')+'</div>');document.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>XF[b.dataset.x]())};
+async function tr(t,to){let o='';for(const c of t.match(/[\s\S]{1,1200}/g)||[]){const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl='+to+'&dt=t&q='+encodeURIComponent(c));o+=(await r.json())[0].map(x=>x[0]).join('')}return o}
+function speak(t,l){if(!window.speechSynthesis)return toast('ఈ బ్రౌజర్‌లో చదివే సౌకర్యం లేదు');speechSynthesis.cancel();(t.match(/[\s\S]{1,600}(?:\s|$)/g)||[]).forEach(c=>{const u=new SpeechSynthesisUtterance(c);u.lang=l;speechSynthesis.speak(u)})}
+function trS(){const s=$('#sheet');sh='x';s.className='on';
+ s.innerHTML='<h3>అనువాదం</h3><select class="f" id="tl">'+LO(ul==='en'?'te':'en')+'</select><textarea id="ti" style="height:110px;margin-top:6px" placeholder="టెక్స్ట్ రాయండి, మాట్లాడండి లేదా పేజీ నుంచి తీసుకోండి"></textarea><div class="row"><button id="t1">📄 ఈ పేజీ</button><button class="p" id="t2">అనువదించు</button></div><textarea id="to" style="height:110px"></textarea><div class="row"><button id="t3">🔊 చదువు</button><button id="t4">కాపీ</button><button id="t5">మూసివేయి</button></div><p style="font-size:12px;color:var(--mu);margin:4px 0">గమనిక: అనువాదం కోసం టెక్స్ట్ Google సేవకు వెళ్తుంది, ఇంటర్నెట్ కావాలి.</p>';
+ mic($('#ti'));
+ $('#t1').onclick=async()=>$('#ti').value=await getText(cur);
+ $('#t2').onclick=async()=>{const t=$('#ti').value.trim();if(!t)return;$('#to').value='…';try{$('#to').value=await tr(t,$('#tl').value)}catch(e){$('#to').value='';toast('అనువాదం కాలేదు, ఇంటర్నెట్ చూడండి')}};
+ $('#t3').onclick=()=>speak($('#to').value,(L.find(x=>x[0]===$('#tl').value)||L[1])[2]);
+ $('#t4').onclick=async()=>{try{await navigator.clipboard.writeText($('#to').value);toast('కాపీ అయింది')}catch(e){}};
+ $('#t5').onclick=()=>{sh='';s.className=''}}
+async function read(){if(window.speechSynthesis&&speechSynthesis.speaking){speechSynthesis.cancel();return toast('ఆపాం')}
+ const t=await getText(cur);if(!t.trim())return toast('ఈ పేజీలో టెక్స్ట్ లేదు, OCR వాడండి');speak(t,LI()[2]);toast('చదువుతోంది… మళ్లీ నొక్కితే ఆగుతుంది')}
+const pnum=()=>edit(async d=>{const f=await d.embedFont(PL.StandardFonts.Helvetica),n=d.getPageCount();d.getPages().forEach((p,i)=>{const w=p.getSize().width,s=(i+1)+' / '+n;p.drawText(s,{x:w/2-f.widthOfTextAtSize(s,10)/2,y:16,size:10,font:f,color:PL.rgb(.3,.3,.3)})})},'పేజీ నంబర్లు చేరాయి');
+const wm=()=>{const t=prompt('వాటర్‌మార్క్ టెక్స్ట్ (ఇంగ్లీష్ అక్షరాలు):','CONFIDENTIAL');if(!t)return;
+ edit(async d=>{const f=await d.embedFont(PL.StandardFonts.HelveticaBold);d.getPages().forEach(p=>{const{width:w,height:h}=p.getSize(),z=Math.max(18,Math.min(80,w*.8/(t.length*.62))),tw=f.widthOfTextAtSize(t,z),k=Math.SQRT1_2;
+  p.drawText(t,{x:w/2-tw/2*k+z*.3*k,y:h/2-tw/2*k-z*.3*k,size:z,font:f,color:PL.rgb(.6,.6,.6),opacity:.35,rotate:PL.degrees(45)})})},'వాటర్‌మార్క్ చేరింది')};
+async function comp(){if(!confirm('సైజు తగ్గిస్తే పేజీలు ఫోటోలుగా మారతాయి, టెక్స్ట్ వెతకడం/కాపీ ఆగిపోతుంది. కొనసాగాలా?'))return;
+ try{await flat();const old=bytes.length,p2=await pdfjsLib.getDocument({data:bytes.slice(),password:pw}).promise,nd=await PL.PDFDocument.create();toast('తగ్గిస్తున్నాం…');
+ for(let i=1;i<=p2.numPages;i++){const p=await p2.getPage(i),a=p.getViewport({scale:1}),vp=p.getViewport({scale:1.4}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+  await p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;const im=await nd.embedJpg(c.toDataURL('image/jpeg',.6));nd.addPage([a.width,a.height]).drawImage(im,{x:0,y:0,width:a.width,height:a.height})}
+ const out=await nd.save();await load(out,0);toast(Math.round(old/1024)+' KB → '+Math.round(out.length/1024)+' KB'+(out.length>=old?' (ఈ ఫైల్ ఇప్పటికే చిన్నది, సేవ్ చేయకండి)':''))}catch(e){toast('పని కాలేదు')}}
+async function scan(){window.CAP=1;try{await imgs()}finally{window.CAP=0}}
+async function ocr(){if(!window.Tesseract){toast('OCR లోడ్ అవుతోంది…');await new Promise((r,j)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.5/tesseract.min.js';s.onload=r;s.onerror=j;document.head.append(s)}).catch(()=>0)}
+ if(!window.Tesseract)return toast('OCR లోడ్ కాలేదు, ఇంటర్నెట్ చూడండి');
+ const p=await pdf.getPage(cur),vp=p.getViewport({scale:2.5}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;await p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+ toast('అక్షరాలు గుర్తిస్తున్నాం… కొంత సమయం పడుతుంది');
+ try{const lg=LI()[3]==='eng'?'eng':LI()[3]+'+eng',r=await Tesseract.recognize(c,lg);box('OCR టెక్స్ట్ (పేజీ '+cur+')',r.data.text.trim()||'అక్షరాలు దొరకలేదు')}catch(e){toast('OCR కాలేదు')}}
+async function bill(){let t='';for(let i=1;i<=pdf.numPages;i++)t+=await getText(i)+' ';
+ const m=t.match(/(?:₹|Rs\.?|INR)\s?\d[\d,]*(?:\.\d+)?|\d[\d,]*\.\d{2}\b/g)||[],v=m.map(x=>parseFloat(x.replace(/[^\d.]/g,''))).filter(x=>!isNaN(x));
+ box('మొత్తాలు',v.length?v.length+' మొత్తాలు దొరికాయి:\n'+m.join('\n')+'\n\nకూడిక: '+v.reduce((a,b)=>a+b,0).toFixed(2)+'\n(బిల్లులో "Total" లైన్ కూడా ఉంటే అది రెండుసార్లు కలిసి ఉండవచ్చు. తనిఖీ చేసుకోండి.)':'ఏ మొత్తాలూ దొరకలేదు')}
+const XF={tr:N(trS),rd:N(read),pn:N(pnum),wm:N(wm),cp:N(comp),sc:scan,oc:N(ocr),bl:N(bill)};
+document.body.insertAdjacentHTML('beforeend','<div id="sp"><img src="icon-v2-192.png" alt=""><div>TVS PDF</div></div>');setTimeout(()=>{$('#sp').style.opacity=0;setTimeout(()=>$('#sp').remove(),600)},900);
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>0);
+</script></body></html>
