@@ -271,4 +271,12 @@ async function bill(){let t='';for(let i=1;i<=pdf.numPages;i++)t+=await getText(
 const XF={tr:N(trS),rd:N(read),pn:N(pnum),wm:N(wm),cp:N(comp),sc:scan,oc:N(ocr),bl:N(bill)};
 document.body.insertAdjacentHTML('beforeend','<div id="sp"><img src="icon-v2-192.png" alt=""><div>TVS PDF</div></div>');setTimeout(()=>{$('#sp').style.opacity=0;setTimeout(()=>$('#sp').remove(),600)},900);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>0);
-</script></body></html>
+</script><script>
+(async()=>{if(!/[?&]shared=1/.test(location.search))return;
+ try{const c=await caches.open('tvs-share'),m=await c.match('shared-pdf');history.replaceState(null,'',location.pathname);
+  if(!m)return toast('షేర్ చేసిన ఫైల్ దొరకలేదు');
+  const b=new Uint8Array(await m.arrayBuffer());name=decodeURIComponent(m.headers.get('X-Name')||'shared.pdf');await c.delete('shared-pdf');
+  for(let i=0;i<60&&!pdfjsLib.GlobalWorkerOptions.workerSrc;i++)await new Promise(r=>setTimeout(r,100));
+  pw=undefined;await load(b)}catch(e){toast('ఫైల్ తెరవలేకపోయాం')}})();
+</script>
+</body></html>
